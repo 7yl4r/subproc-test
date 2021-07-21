@@ -24,7 +24,7 @@ class Test_Subprocess_Under_Errors(TestCase):
         with self.assertRaises(subprocess.CalledProcessError):
             subprocess.run(['test'], check=True)
 
-    def t(self):
+    def test_shadow_ranger_formatter(self):
         """
         reformat CalledProcessError output with suggestion from S.O.
         https://stackoverflow.com/a/64772548/1483986
