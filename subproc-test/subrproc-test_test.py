@@ -37,7 +37,7 @@ class Test_Subprocess_Under_Errors(TestCase):
                 stderr=subprocess.PIPE
                 # ^ Captures stderr so e.stderr is populated if needed
             )
-        except CalledProcessError as e:
+        except subprocess.CalledProcessError as e:
             raise subprocess.CalledProcessError(
                 f"exited with exit status {e.returncode}:",
                 e.stderr,
