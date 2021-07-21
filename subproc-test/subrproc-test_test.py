@@ -19,5 +19,5 @@ class Test_Subprocess_Under_Errors(TestCase):
     #########################
     def test_error_raises(self):
         """ subprocess raises error when test fails """
-        with self.assertRaises(TypeError):
+        with self.assertRaises(subprocess.CalledProcessError):
             subprocess.run(["test"])
