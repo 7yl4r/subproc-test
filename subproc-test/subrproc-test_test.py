@@ -18,6 +18,28 @@ class Test_Subprocess_Under_Errors(TestCase):
     # tests:
     #########################
     def test_error_raises(self):
-        """ subprocess raises error when test fails """
-        # with self.assertRaises(subprocess.CalledProcessError):
-        subprocess.run(["test"])
+        """
+        CalledProcessError error when test fails and check=True
+        """
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(['test'], check=True)
+
+    def t(self):
+        """
+        reformat CalledProcessError output with suggestion from S.O.
+        https://stackoverflow.com/a/64772548/1483986
+        """
+        try:
+            subprocess.run(
+                ['test'],
+                check=True, stdout=subprocess.DEVNULL,
+                #           ^ Ignores stdout
+                stderr=subprocess.PIPE
+                # ^ Captures stderr so e.stderr is populated if needed
+            )
+        except CalledProcessError as e:
+            raise subprocess.CalledProcessError(
+                f"exited with exit status {e.returncode}:",
+                e.stderr,
+                file=sys.stderr
+            )
