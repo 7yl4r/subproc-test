@@ -50,7 +50,7 @@ class Test_Subprocess_Under_Errors(TestCase):
                 f"# === descrip : \n\t{getattr(e, 'description', None)} \n"
                 f"# === stack_trace: \n\t{stacktrace}\n"
                 f"# === std output : \n\t{getattr(e, 'stdout', None)} \n"
-                f"# === stderr out : \n\t{getattr(e, 'stderr', None} \n"
+                f"# === stderr out : \n\t{getattr(e, 'stderr', None)} \n"
                 "# =========================================================\n"
             )
             print(
