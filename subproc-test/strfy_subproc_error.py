@@ -33,6 +33,17 @@ def subproc_error_wrapper(cmd):
 
 
 def strfy_subproc_error(e, cmd=[]):
+    """
+    Generates a string with lots of info to help debug a subproc gone wrong.
+    Likely copy-pasted from https://github.com/7yl4r/subproc-test .
+
+    params:
+    -------
+    e : Exception
+        the exception thrown by subprocess.run
+    cmd : list(str)
+        command [] that was passed into run()
+    """
     # TODO: assert e is an error
     stacktrace = traceback.format_exc()
     output_text = (
