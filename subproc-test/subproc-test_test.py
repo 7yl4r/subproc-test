@@ -9,7 +9,7 @@ from unittest import TestCase
 
 # tested module(s):
 import subprocess
-from subproc_error_strfy import subproc_error_strfy
+from strfy_subproc_error import strfy_subproc_error
 
 
 class Test_Subprocess_Under_Errors(TestCase):
@@ -30,5 +30,17 @@ class Test_Subprocess_Under_Errors(TestCase):
         print out all the info from `cmd not found` error
         """
         with self.assertRaises(RuntimeError):
-            subproc_error_strfy(self.failing_cmd_w_cmd_n_found_output)
+            output_text = strfy_subproc_error(
+                self.failing_cmd_w_cmd_n_found_output
+            )
+            # print(
+            #     output_text,
+            #     getattr(e, 'stderr', None),
+            #     file=sys.stderr
+            # )
+            # TODO: if e is FileNotFoundError raise FileNotFoundError
+            raise RuntimeError(
+                output_text
+            )
+
             # TODO check stdout contains FileNotFoundError
