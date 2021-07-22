@@ -31,6 +31,9 @@ class Test_Subprocess_Under_Errors(TestCase):
         * FileNotFoundError when cmd 1st arg cmd not found.
         * RuntimeError if output cannot otherwise be parsed.
         """
+        import sys
+        import traceback
+
         try:
             subprocess.run(
                 cmd,
@@ -73,7 +76,5 @@ class Test_Subprocess_Under_Errors(TestCase):
         """
         print out all the info from `cmd not found` error
         """
-        import sys
-        import traceback
         with self.assertRaises(FileNotFoundError):
             self(subproc_error_handler(self.failing_cmd_w_cmd_n_found_output))
