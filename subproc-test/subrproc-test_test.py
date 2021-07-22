@@ -44,6 +44,6 @@ class Test_Subprocess_Under_Errors(TestCase):
                 e.stderr,
                 file=sys.stderr
             )
-            raise subprocess.CalledProcessError(
+            raise RuntimeError(
                 f"exited with exit status {e.returncode}: \n\t{e.stderr}"
             )
