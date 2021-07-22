@@ -15,6 +15,8 @@ import traceback
 import subprocess
 
 class Test_Subprocess_Under_Errors(TestCase):
+    failing_cmd_w_no_output = ['test']
+    failing_cmd_w_cmd_n_found_output = ['fake_cmd_2_cause_cmd_n_found']
 
     # tests:
     #########################
@@ -23,17 +25,16 @@ class Test_Subprocess_Under_Errors(TestCase):
         CalledProcessError error when test fails and check=True
         """
         with self.assertRaises(subprocess.CalledProcessError):
-            subprocess.run(['test'], check=True)
+            subprocess.run(self.failing_cmd_w_no_output, check=True)
 
-    def test_shadow_ranger_formatter(self):
+    def test_cmd_not_found_output(self):
         """
-        reformat CalledProcessError output with suggestion from S.O.
-        https://stackoverflow.com/a/64772548/1483986
+        print out all the info from `cmd not found` error
         """
         import sys
         try:
             subprocess.run(
-                ['test'],
+                self.failing_cmd_w_cmd_n_found_output,
                 check=True, stdout=subprocess.DEVNULL,
                 #           ^ Ignores stdout
                 stderr=subprocess.PIPE
@@ -42,13 +43,14 @@ class Test_Subprocess_Under_Errors(TestCase):
         except subprocess.CalledProcessError as e:
             stacktrace = traceback.format_exc()
             output_text = (
-                f"# exited w/ returncode {e.returncode}. ===================\n"
-                f"# === e.code: {e.code} \n"
-                f"# === description: \n\t{error.description} \n"
+                f"# === exited w/ returncode {e.returncode}. ===================\n"
+                # these two excluded b/c some exceptions "obj has no attr"
+                # f"# === err code: {e.code} \n"
+                # f"# === descrip : \n\t{e.description} \n"
                 f"# === stack_trace: \n\t{stacktrace}\n"
-                f"# === stdout: \n\t{e.stdout} \n"
-                f"# === stderr out: \n\t{e.stderr} \n"
-                "# ========================================================="
+                f"# === std output : \n\t{e.stdout} \n"
+                f"# === stderr out : \n\t{e.stderr} \n"
+                "# =========================================================\n"
             )
             print(
                 output_text,
@@ -58,9 +60,3 @@ class Test_Subprocess_Under_Errors(TestCase):
             raise RuntimeError(
                 output_text
             )
-
-        # if "subprocess.CalledProcessError" in stacktrace:
-        #     error_dict['return_code'] = error.original_exception.returncode
-        #     error_dict['output'] = error.original_exception.output
-        #     error_dict['stdout'] = error.original_exception.stdout
-        #     error_dict['stderr'] = error.original_exception.stderr
