@@ -42,7 +42,7 @@ class Test_Subprocess_Under_Errors(TestCase):
                 stderr=subprocess.PIPE
                 # ^ Captures stderr so e.stderr is populated if needed
             )
-        except subprocess.CalledProcessError, FileNotFoundError as e:
+        except(subprocess.CalledProcessError, FileNotFoundError) as e:
             stacktrace = traceback.format_exc()
             output_text = (
                 f"# === exited w/ returncode {e.returncode}. ===================\n"
