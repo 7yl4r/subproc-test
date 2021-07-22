@@ -9,6 +9,7 @@ from unittest import TestCase
 from unittest.mock import patch
 from unittest.mock import MagicMock
 import pytest
+import traceback
 
 # tested module(s):
 import subprocess
@@ -39,11 +40,27 @@ class Test_Subprocess_Under_Errors(TestCase):
                 # ^ Captures stderr so e.stderr is populated if needed
             )
         except subprocess.CalledProcessError as e:
+            stacktrace = traceback.format_exc()
+            output_text = (
+                f"# exited w/ returncode {e.returncode}. ===================\n"
+                f"# === e.code: {e.code} \n"
+                f"# === description: \n\t{error.description} \n"
+                f"# === stack_trace: \n\t{stacktrace}\n"
+                f"# === stdout: \n\t{e.stdout} \n"
+                f"# === stderr out: \n\t{e.stderr} \n"
+                "# ========================================================="
+            )
             print(
-                f"exited with exit status {e.returncode}:",
+                output_text,
                 e.stderr,
                 file=sys.stderr
             )
             raise RuntimeError(
-                f"exited with exit status {e.returncode}: \n\t{e.stderr}"
+                output_text
             )
+
+        # if "subprocess.CalledProcessError" in stacktrace:
+        #     error_dict['return_code'] = error.original_exception.returncode
+        #     error_dict['output'] = error.original_exception.output
+        #     error_dict['stdout'] = error.original_exception.stdout
+        #     error_dict['stderr'] = error.original_exception.stderr
