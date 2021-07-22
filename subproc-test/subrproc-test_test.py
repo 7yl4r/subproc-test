@@ -9,7 +9,6 @@ from unittest import TestCase
 from unittest.mock import patch
 from unittest.mock import MagicMock
 import pytest
-import traceback
 
 # tested module(s):
 import subprocess
@@ -18,23 +17,23 @@ class Test_Subprocess_Under_Errors(TestCase):
     failing_cmd_w_no_output = ['test']
     failing_cmd_w_cmd_n_found_output = ['fake_cmd_2_cause_cmd_n_found']
 
-    # tests:
-    #########################
-    def test_error_raises(self):
+    def subproc_error_handler(self, cmd):
         """
-        CalledProcessError error when test fails and check=True
-        """
-        with self.assertRaises(subprocess.CalledProcessError):
-            subprocess.run(self.failing_cmd_w_no_output, check=True)
+        This error handling function wraps around a subprocess.run
+        call and provides more text output when the commands called return
+        error. This function catches the subprocess.CalledProcessError
+        often thrown and instead raises different errors based on the output.
+        NOTE: subprocess.run sometimes thows different errors (like
+        FileNotFoundError when the 1st arg is a command that cannot be found).
 
-    def test_cmd_not_found_output(self):
+        Exceptions Raised:
+        ==================
+        * FileNotFoundError when cmd 1st arg cmd not found.
+        * RuntimeError if output cannot otherwise be parsed.
         """
-        print out all the info from `cmd not found` error
-        """
-        import sys
         try:
             subprocess.run(
-                self.failing_cmd_w_cmd_n_found_output,
+                cmd,
                 check=True, stdout=subprocess.DEVNULL,
                 #           ^ Ignores stdout
                 stderr=subprocess.PIPE
@@ -60,3 +59,21 @@ class Test_Subprocess_Under_Errors(TestCase):
             raise RuntimeError(
                 output_text
             )
+
+    # tests:
+    #########################
+    def test_error_raises(self):
+        """
+        CalledProcessError error when test fails and check=True
+        """
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(self.failing_cmd_w_no_output, check=True)
+
+    def test_cmd_not_found_output(self):
+        """
+        print out all the info from `cmd not found` error
+        """
+        import sys
+        import traceback
+        with self.assertRaises(FileNotFoundError):
+            self(subproc_error_handler(self.failing_cmd_w_cmd_n_found_output))
