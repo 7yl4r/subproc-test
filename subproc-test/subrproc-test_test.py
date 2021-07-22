@@ -44,4 +44,4 @@ class Test_Subprocess_Under_Errors(TestCase):
                 e.stderr,
                 file=sys.stderr
             )
-            raise
+            exit(1)
