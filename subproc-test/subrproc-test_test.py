@@ -76,5 +76,6 @@ class Test_Subprocess_Under_Errors(TestCase):
         """
         print out all the info from `cmd not found` error
         """
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(RuntimeError):
             self.subproc_error_handler(self.failing_cmd_w_cmd_n_found_output)
+            # TODO check stdout contains FileNotFoundError
