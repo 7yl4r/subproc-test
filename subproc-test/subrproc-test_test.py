@@ -45,18 +45,17 @@ class Test_Subprocess_Under_Errors(TestCase):
         except(subprocess.CalledProcessError, FileNotFoundError) as e:
             stacktrace = traceback.format_exc()
             output_text = (
-                f"# === exited w/ returncode {e.returncode}. ===================\n"
-                # these two excluded b/c some exceptions "obj has no attr"
-                # f"# === err code: {e.code} \n"
-                # f"# === descrip : \n\t{e.description} \n"
+                f"# === exited w/ returncode {getattr(e, 'returncode', None)}. ===================\n"
+                f"# === err code: {getattr(e, 'code', None)} \n"
+                f"# === descrip : \n\t{getattr(e, 'description', None)} \n"
                 f"# === stack_trace: \n\t{stacktrace}\n"
-                f"# === std output : \n\t{e.stdout} \n"
-                f"# === stderr out : \n\t{e.stderr} \n"
+                f"# === std output : \n\t{getattr(e, 'stdout', None)} \n"
+                f"# === stderr out : \n\t{getattr(e, 'stderr', None} \n"
                 "# =========================================================\n"
             )
             print(
                 output_text,
-                e.stderr,
+                getattr(e, 'stderr', None),
                 file=sys.stderr
             )
             # TODO: if e is FileNotFoundError raise FileNotFoundError
